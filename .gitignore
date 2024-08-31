@@ -1,0 +1,7 @@
+*.idea
+.DS_Store
+*.pth
+*.pyc
+*.ipynb
+__pycache_
+vision_rush_image*
