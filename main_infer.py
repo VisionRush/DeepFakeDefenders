@@ -68,12 +68,12 @@ class SRMConv2d_simple(nn.Module):
 
 class INFER_API:
 
-    _instance = None  # 存储单例实例
+    _instance = None
         
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super(INFER_API, cls).__new__(cls)
-            cls._instance.initialize()  # 在第一次创建实例时初始化
+            cls._instance.initialize()
         return cls._instance
     
     def initialize(self):
@@ -133,7 +133,7 @@ class INFER_API:
 
 
 def main():
-    img = '/big-data/dataset-academic/multi-FFD/phase1_image/valset/nature/51aa9b8d0da890cd1d0c5029e3d89e3c.jpg'
+    img = '51aa9b8d0da890cd1d0c5029e3d89e3c.jpg'
     infer_api = INFER_API()
     print(infer_api.test(img))
 

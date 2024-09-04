@@ -19,7 +19,6 @@ RUN pip3 install -r requirements.txt -i https://pypi.mirrors.ustc.edu.cn/simple/
 # 复制模型及代码到工作目录
 ADD ./core /code/core
 ADD ./dataset /code/dataset
-ADD ./final_model_csv /code/final_model_csv
 ADD ./model /code/model
 ADD ./pre_model /code/pre_model
 ADD ./toolkit /code/toolkit

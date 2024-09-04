@@ -1,7 +1,7 @@
 from toolkit.chelper import final_model
 import torch
 
-
+# Trained ConvNeXt and RepLKNet paths (for reference)
 convnext_path = './final_model_csv/convnext_end.pth'
 replknet_path = './final_model_csv/replk_end.pth'
 

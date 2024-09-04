@@ -16,8 +16,8 @@ import warnings
 warnings.filterwarnings("ignore")
 
 # check
-print(torch.__version__)  # torch版本
-print(torch.cuda.is_available())  # GPU是否可用
+print(torch.__version__)
+print(torch.cuda.is_available())
 
 # init
 cfg = CN(new_allowed=True)
@@ -59,6 +59,7 @@ cfg.optimizer.eps = 1e-8
 cfg.scheduler = CN(new_allowed=True)
 cfg.scheduler.min_lr = 1e-6
 
+# DDP init
 local_rank = int(os.environ['LOCAL_RANK'])
 device = 'cuda:{}'.format(local_rank)
 torch.cuda.set_device(local_rank)
@@ -147,7 +148,6 @@ for epoch_idx in range(cfg.train.epoch_start, cfg.train.epoch_num):
         print(outInfo)
 
         f_open.write(outInfo)
-        # 刷新文件
         f_open.flush()
 
         # curve all mAP & mLoss
@@ -156,8 +156,3 @@ for epoch_idx in range(cfg.train.epoch_start, cfg.train.epoch_num):
 
         # curve lr
         writer.add_scalar('train_lr', train_lr, epoch_idx)
-
-
-
-# destroy_process_group.
-torch.distributed.destroy_process_group()
