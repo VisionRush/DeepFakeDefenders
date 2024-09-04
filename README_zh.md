@@ -1,6 +1,3 @@
-<p align="center">
-    <img src="" width="250" style="margin-bottom: 0.2;"/>
-<p>
 <h2 align="center"> <a href="">DeepFake Defenders</a></h2>
 <h5 align="center"> 如果您喜欢我们的项目，请在 GitHub 上给我们一个Star ⭐ 以获取最新更新。  </h2>
 
