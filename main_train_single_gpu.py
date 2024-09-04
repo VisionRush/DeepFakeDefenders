@@ -41,7 +41,7 @@ cfg.train = CN(new_allowed=True)
 cfg.train.resume = False
 cfg.train.resume_path = ''
 cfg.train.params_path = ''
-cfg.train.batch_size = 16
+cfg.train.batch_size = 1
 cfg.train.epoch_num = 20
 cfg.train.epoch_start = 0
 cfg.train.worker_num = 8
@@ -59,24 +59,19 @@ cfg.optimizer.eps = 1e-8
 cfg.scheduler = CN(new_allowed=True)
 cfg.scheduler.min_lr = 1e-6
 
-local_rank = int(os.environ['LOCAL_RANK'])
-device = 'cuda:{}'.format(local_rank)
-torch.cuda.set_device(local_rank)
-torch.distributed.init_process_group(backend='nccl', init_method='env://')
-world_size = torch.distributed.get_world_size()
-rank = torch.distributed.get_rank()
+device = 'cuda:0'
 
 # init path
 task = 'competition'
 log_root = 'output/' + datetime.datetime.now().strftime("%Y-%m-%d") + '-' + time.strftime(
     "%H-%M-%S") + '_' + cfg.network.name + '_' + f"to_{task}_BinClass"
-if local_rank == 0:
-    if not os.path.exists(log_root):
-        os.makedirs(log_root)
+
+if not os.path.exists(log_root):
+    os.makedirs(log_root)
 writer = SummaryWriter(log_root)
 
 # create engine
-train_engine = TrainEngine(local_rank, world_size, DDP=True, SyncBatchNorm=True)
+train_engine = TrainEngine(0, 0, DDP=False, SyncBatchNorm=False)
 train_engine.create_env(cfg)
 
 # create transforms
@@ -100,21 +95,19 @@ trainset.load_data_from_txt(train_list, ctg_list)
 valset = MultiClassificationProcessor(transform_test)
 valset.load_data_from_txt(val_list, ctg_list)
 
-train_sampler = torch.utils.data.distributed.DistributedSampler(trainset)
-val_sampler = torch.utils.data.distributed.DistributedSampler(valset)
 
 # create dataloader
 train_loader = torch.utils.data.DataLoader(dataset=trainset,
                                            batch_size=cfg.train.batch_size,
-                                           sampler=train_sampler,
                                            num_workers=cfg.train.worker_num,
+                                           shuffle=True,
                                            pin_memory=True,
                                            drop_last=True)
 
 val_loader = torch.utils.data.DataLoader(dataset=valset,
                                          batch_size=cfg.train.batch_size,
-                                         sampler=val_sampler,
                                          num_workers=cfg.train.worker_num,
+                                         shuffle=False,
                                          pin_memory=True,
                                          drop_last=False)
 
@@ -135,29 +128,24 @@ for epoch_idx in range(cfg.train.epoch_start, cfg.train.epoch_num):
     if ema_start:
         ema_val_top1, ema_val_loss, ema_val_auc = train_engine.val_ema(val_loader=val_loader, epoch_idx=epoch_idx)
 
-    # check mAP and save
-    if local_rank == 0:
-        train_engine.save_checkpoint(log_root, epoch_idx, train_top1, val_top1, ema_start)
+    
+    train_engine.save_checkpoint(log_root, epoch_idx, train_top1, val_top1, ema_start)
 
-        if ema_start:
-            outInfo = f"epoch_idx = {epoch_idx},  train_top1={train_top1}, train_loss={train_loss},val_top1={val_top1},val_loss={val_loss}, val_auc={val_auc}, ema_val_top1={ema_val_top1}, ema_val_loss={ema_val_loss}, ema_val_auc={ema_val_auc} \n"
-        else:
-            outInfo = f"epoch_idx = {epoch_idx},  train_top1={train_top1}, train_loss={train_loss},val_top1={val_top1},val_loss={val_loss}, val_auc={val_auc} \n"
+    if ema_start:
+        outInfo = f"epoch_idx = {epoch_idx},  train_top1={train_top1}, train_loss={train_loss},val_top1={val_top1},val_loss={val_loss}, val_auc={val_auc}, ema_val_top1={ema_val_top1}, ema_val_loss={ema_val_loss}, ema_val_auc={ema_val_auc} \n"
+    else:
+        outInfo = f"epoch_idx = {epoch_idx},  train_top1={train_top1}, train_loss={train_loss},val_top1={val_top1},val_loss={val_loss}, val_auc={val_auc} \n"
 
-        print(outInfo)
+    print(outInfo)
 
-        f_open.write(outInfo)
-        # 刷新文件
-        f_open.flush()
+    f_open.write(outInfo)
+    # 刷新文件
+    f_open.flush()
 
-        # curve all mAP & mLoss
-        writer.add_scalars('top1', {'train': train_top1, 'valid': val_top1}, epoch_idx)
-        writer.add_scalars('loss', {'train': train_loss, 'valid': val_loss}, epoch_idx)
+    # curve all mAP & mLoss
+    writer.add_scalars('top1', {'train': train_top1, 'valid': val_top1}, epoch_idx)
+    writer.add_scalars('loss', {'train': train_loss, 'valid': val_loss}, epoch_idx)
 
-        # curve lr
-        writer.add_scalar('train_lr', train_lr, epoch_idx)
+    # curve lr
+    writer.add_scalar('train_lr', train_lr, epoch_idx)
 
-
-
-# destroy_process_group.
-torch.distributed.destroy_process_group()
