@@ -90,4 +90,4 @@ print(json.loads(content))
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=DeepFakeDefenders/DeepFakeDefenders&type=Date)](https://star-history.com/#DeepFakeDefenders/DeepFakeDefenders&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=VisionRush/DeepFakeDefenders&type=Date)](https://star-history.com/#DeepFakeDefenders/DeepFakeDefenders&Date)
