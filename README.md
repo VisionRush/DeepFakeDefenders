@@ -18,7 +18,7 @@
 
 ## 📣 News
 
-* **[2024.09.27]**  🔥 We officially released the initial version of Deepfake defenders, and we won the third prize in the deepfake challenge at [[the conference on the bund](https://www.atecup.cn/deepfake)].
+* **[2024.09.05]**  🔥 We officially released the initial version of Deepfake defenders, and we won the third prize in the deepfake challenge at [[the conference on the bund](https://www.atecup.cn/deepfake)].
 
 ## 🚀 Quickly Start
 
