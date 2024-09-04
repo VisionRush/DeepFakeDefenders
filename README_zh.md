@@ -2,7 +2,7 @@
     <img src="" width="250" style="margin-bottom: 0.2;"/>
 <p>
 <h2 align="center"> <a href="">DeepFake Defenders</a></h2>
-<h5 align="center"> If you like our project, please give us a star ⭐ on GitHub for latest update.  </h2>
+<h5 align="center"> 如果您喜欢我们的项目，请在 GitHub 上给我们一个Star ⭐ 以获取最新更新。  </h2>
 
 <h5 align="center">
     
@@ -16,58 +16,34 @@
 
 </h5>
 
-💡 We also provide [[中文文档 / CHINESE DOC](README_zh.md)]. We very welcome and appreciate your contributions to this project.
+💡 我们在这里提供了[[英文文档 / ENGLISH DOC](README.md)]，我们十分欢迎和感谢您能够对我们的项目提出建议和贡献。
 
+### 一、 docker
+#### 1. docker构建
+    sudo docker build  -t vision-rush-image:1.0.1 --network host .
+#### 2. 容器启动
+    sudo docker run -d --name  vision_rush_image  --gpus=all  --net host  vision-rush-image:1.0.1
 
-## 📣 News
+### 二、 训练
 
-* **[2024.09.27]**  🔥 We officially released the initial version of Deepfake defenders, and we won the third prize in the deepfake challenge at [[the conference on the bund](https://www.atecup.cn/deepfake)].
+#### 1. 更改数据集路径
 
-## 🚀 Quickly Start
+    将训练所需的训练集txt文件、验证集txt文件以及标签txt文件分别放置在dataset文件夹下，并命名为相同的文件名（dataset下有各个txt示例）
 
-### 1. Deploy in Docker
-#### Building
+#### 2. 更改超参数
+    针对所采用的两个模型，在main_train.py分别需要更改如下参数：
+    RepLKNet---cfg.network.name = 'replknet'; cfg.train.batch_size = 16
+    ConvNeXt---cfg.network.name = 'convnext'; cfg.train.batch_size = 24
 
-```shell
-sudo docker build  -t vision-rush-image:1.0.1 --network host .
-```
+#### 3. 启动训练
+    bash main.sh
 
-#### Running
+#### 4. 模型融合
+    在merge.py中更改ConvNeXt模型路径以及RepLKNet模型路径，执行python merge.py后获取最终推理测试模型。
 
-```shell
-sudo docker run -d --name  vision_rush_image  --gpus=all  --net host  vision-rush-image:1.0.1
-```
+### 三、 推理
 
-### 2. Training from Scratch
-
-#### Modifying the dataset path
-
-Place the training-set **(\*.txt)** file, validation-set **(\*.txt)** file, and label **(\*.txt)** file required for training in the dataset folder and name them with the same file name (there are various txt examples under dataset)
-
-#### Modifying the Hyper-parameters
-
-For the two models (RepLKNet and ConvNeXt) used, the following parameters need to be changed in `main_train.py`:
-
-```python
-# For RepLKNet.
-cfg.network.name = 'replknet'; cfg.train.batch_size = 16
-# For ConvNeXt.
-cfg.network.name = 'convnext'; cfg.train.batch_size = 24
-```
-
-#### Using the training script
-
-```shell
-bash main.sh
-```
-
-#### Model Assembling
-
-Replace the ConvNeXt model path and the RepLKNet model path in `merge.py`, and execute `python merge.py` to obtain the final inference test model.
-
-### Inference
-
-The following example uses the **POST** request interface to request the image path as the request parameter, and the response output is the deepfake score predicted by the model.
+示例如下，通过post请求接口请求，请求参数为图像路径，响应输出为模型预测的deepfake分数
 
 ```python
 #!/usr/bin/env python
