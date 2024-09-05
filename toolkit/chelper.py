@@ -47,12 +47,13 @@ class final_model(nn.Module):  # Total parameters: 158.64741325378418 MB
         return torch.stack((predict_score1, predict_score2), dim=-1).mean(dim=-1)
 
 
-def load_model(model_name, ctg_num):
+def load_model(model_name, ctg_num, use_sync_bn):
     """Load standard model, like vgg16, resnet18,
 
     Args:
         model_name: e.g., vgg16, inception, resnet18, ...
         ctg_num: e.g., 1000
+        use_sync_bn: True/False
     """
     if model_name == 'convnext':
         model = convnext_base(num_classes=ctg_num)
@@ -65,7 +66,7 @@ def load_model(model_name, ctg_num):
         model = augment_inputs_network(model)
         
     elif model_name == 'replknet':
-        model = create_RepLKNet31B(num_classes=ctg_num)
+        model = create_RepLKNet31B(num_classes=ctg_num, use_sync_bn=use_sync_bn)
         model_path = 'pre_model/RepLKNet-31B_ImageNet-1K_384.pth'
         check_point = torch.load(model_path)
         check_point.pop('head.weight')
