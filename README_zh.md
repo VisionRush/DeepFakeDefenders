@@ -32,7 +32,7 @@ RepLKNet: https://drive.google.com/file/d/1vo-P3XB6mRLUeDzmgv90dOu73uCeLfZN/view
 ConvNeXt: https://dl.fbaipublicfiles.com/convnext/convnext_base_1k_384.pth
 ```
 
-### 二、 训练
+### 二、训练
 
 #### 1. 更改数据集路径
 将训练所需的训练集txt文件、验证集txt文件以及标签txt文件分别放置在dataset文件夹下，并命名为相同的文件名（dataset下有各个txt示例）
@@ -80,7 +80,7 @@ content = response.content
 print(json.loads(content))
 ```
 
-### 三、 docker
+### 三、docker
 #### 1. docker构建
     sudo docker build  -t vision-rush-image:1.0.1 --network host .
 #### 2. 容器启动
