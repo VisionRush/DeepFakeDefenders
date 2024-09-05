@@ -1,5 +1,5 @@
 <h2 align="center"> <a href="">DeepFake Defenders</a></h2>
-<h5 align="center"> If you like our project, please give us a star ⭐ on GitHub for latest update.  </h2>
+<h5 align="center"> If you like our project, please give us a star ⭐ on GitHub for latest update.  </h5>
 
 <h5 align="center">
     
@@ -13,8 +13,11 @@
 
 </h5>
 
-💡 We also provide [[中文文档 / CHINESE DOC](README_zh.md)]. We very welcome and appreciate your contributions to this project.
+<p align='center'>  
+  <img src='./images/competition_title.png' width='850'/>
+</p>
 
+💡 We also provide [[中文文档 / CHINESE DOC](README_zh.md)]. We very welcome and appreciate your contributions to this project.
 
 ## 📣 News
 
@@ -22,47 +25,46 @@
 
 ## 🚀 Quickly Start
 
-### 1. Deploy in Docker
-#### Building
+### 1. Pretrained Models Preparation 
 
-```shell
-sudo docker build  -t vision-rush-image:1.0.1 --network host .
+Before getting started, please place the ImageNet-1K pretrained weight files in the `./pre_model` directory. The download links for the weights are provided below:
 ```
-
-#### Running
-
-```shell
-sudo docker run -d --name  vision_rush_image  --gpus=all  --net host  vision-rush-image:1.0.1
+RepLKNet: https://drive.google.com/file/d/1vo-P3XB6mRLUeDzmgv90dOu73uCeLfZN/view?usp=sharing
+ConvNeXt: https://dl.fbaipublicfiles.com/convnext/convnext_base_1k_384.pth
 ```
 
 ### 2. Training from Scratch
 
-#### Modifying the dataset path
+#### 2.1 Modifying the dataset path
 
 Place the training-set **(\*.txt)** file, validation-set **(\*.txt)** file, and label **(\*.txt)** file required for training in the dataset folder and name them with the same file name (there are various txt examples under dataset)
 
-#### Modifying the Hyper-parameters
+#### 2.2 Modifying the Hyper-parameters
 
 For the two models (RepLKNet and ConvNeXt) used, the following parameters need to be changed in `main_train.py`:
 
 ```python
-# For RepLKNet.
+# For RepLKNet
 cfg.network.name = 'replknet'; cfg.train.batch_size = 16
-# For ConvNeXt.
+# For ConvNeXt
 cfg.network.name = 'convnext'; cfg.train.batch_size = 24
 ```
 
-#### Using the training script
-
+#### 2.3 Using the training script
+##### Multi-GPUs:（8 GPUs were used）
 ```shell
 bash main.sh
 ```
+##### Single-GPU：
+```shell
+CUDA_VISIBLE_DEVICES=0 python main_train_single_gpu.py
+```
 
-#### Model Assembling
+#### 2.4 Model Assembling
 
-Replace the ConvNeXt model path and the RepLKNet model path in `merge.py`, and execute `python merge.py` to obtain the final inference test model.
+Replace the ConvNeXt trained model path and the RepLKNet trained model path in `merge.py`, and execute `python merge.py` to obtain the final inference test model.
 
-### Inference
+### 2.5 Inference
 
 The following example uses the **POST** request interface to request the image path as the request parameter, and the response output is the deepfake score predicted by the model.
 
@@ -86,7 +88,18 @@ content = response.content
 print(json.loads(content))
 ```
 
+### 3. Deploy in Docker
+#### Building
 
+```shell
+sudo docker build  -t vision-rush-image:1.0.1 --network host .
+```
+
+#### Running
+
+```shell
+sudo docker run -d --name  vision_rush_image  --gpus=all  --net host  vision-rush-image:1.0.1
+```
 
 ## Star History
 

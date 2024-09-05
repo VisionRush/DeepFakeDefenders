@@ -43,7 +43,7 @@ class TrainEngine(object):
 
     def create_env(self, cfg):
         # create network
-        self.netloc_ = load_model(cfg.network.name, cfg.network.class_num)
+        self.netloc_ = load_model(cfg.network.name, cfg.network.class_num, self.SyncBN)
         print(self.netloc_)
 
         self.netloc_.cuda()

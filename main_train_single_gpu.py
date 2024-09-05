@@ -13,11 +13,12 @@ from toolkit.yacs import CfgNode as CN
 from timm.utils import ModelEmaV3
 
 import warnings
+
 warnings.filterwarnings("ignore")
 
 # check
-print(torch.__version__)  # torch版本
-print(torch.cuda.is_available())  # GPU是否可用
+print(torch.__version__)
+print(torch.cuda.is_available())
 
 # init
 cfg = CN(new_allowed=True)
@@ -41,7 +42,7 @@ cfg.train = CN(new_allowed=True)
 cfg.train.resume = False
 cfg.train.resume_path = ''
 cfg.train.params_path = ''
-cfg.train.batch_size = 1
+cfg.train.batch_size = 16
 cfg.train.epoch_num = 20
 cfg.train.epoch_start = 0
 cfg.train.worker_num = 8
@@ -59,8 +60,6 @@ cfg.optimizer.eps = 1e-8
 cfg.scheduler = CN(new_allowed=True)
 cfg.scheduler.min_lr = 1e-6
 
-device = 'cuda:0'
-
 # init path
 task = 'competition'
 log_root = 'output/' + datetime.datetime.now().strftime("%Y-%m-%d") + '-' + time.strftime(
@@ -75,12 +74,12 @@ train_engine = TrainEngine(0, 0, DDP=False, SyncBatchNorm=False)
 train_engine.create_env(cfg)
 
 # create transforms
-transforms_dict ={
-    0 : transforms_imagenet_train(img_size=(cfg.network.input_size, cfg.network.input_size)),
-    1 : transforms_imagenet_train(img_size=(cfg.network.input_size, cfg.network.input_size), jpeg_compression=1),
+transforms_dict = {
+    0: transforms_imagenet_train(img_size=(cfg.network.input_size, cfg.network.input_size)),
+    1: transforms_imagenet_train(img_size=(cfg.network.input_size, cfg.network.input_size), jpeg_compression=1),
 }
 
-transforms_dict_test ={
+transforms_dict_test = {
     0: create_transforms_inference(h=512, w=512),
     1: create_transforms_inference(h=512, w=512),
 }
@@ -94,7 +93,6 @@ trainset.load_data_from_txt(train_list, ctg_list)
 
 valset = MultiClassificationProcessor(transform_test)
 valset.load_data_from_txt(val_list, ctg_list)
-
 
 # create dataloader
 train_loader = torch.utils.data.DataLoader(dataset=trainset,
@@ -121,14 +119,14 @@ ema_start = True
 train_engine.ema_model = ModelEmaV3(train_engine.netloc_).cuda()
 for epoch_idx in range(cfg.train.epoch_start, cfg.train.epoch_num):
     # train
-    train_top1, train_loss, train_lr = train_engine.train_multi_class(train_loader=train_loader, epoch_idx=epoch_idx, ema_start=ema_start)
+    train_top1, train_loss, train_lr = train_engine.train_multi_class(train_loader=train_loader, epoch_idx=epoch_idx,
+                                                                      ema_start=ema_start)
     # val
     val_top1, val_loss, val_auc = train_engine.val_multi_class(val_loader=val_loader, epoch_idx=epoch_idx)
     # ema_val
     if ema_start:
         ema_val_top1, ema_val_loss, ema_val_auc = train_engine.val_ema(val_loader=val_loader, epoch_idx=epoch_idx)
 
-    
     train_engine.save_checkpoint(log_root, epoch_idx, train_top1, val_top1, ema_start)
 
     if ema_start:
