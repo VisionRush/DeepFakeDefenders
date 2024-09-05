@@ -17,7 +17,7 @@
   <img src='./images/competition_title.png' width='850'/>
 </p>
 
-💡 我们在这里提供了[[英文文档 / ENGLISH DOC](README.md)]，我们十分欢迎和感谢您能够对我们的项目提出建议和贡献。
+💡 我们在这里提供了 [[英文文档 / ENGLISH DOC](README.md)] 和 [[韩文文档 / KOREAN DOC](README_kr.md)]，我们十分欢迎和感谢您能够对我们的项目提出建议和贡献。
 
 ## 📣 News
 

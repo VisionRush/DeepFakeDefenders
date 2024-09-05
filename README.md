@@ -4,7 +4,7 @@
 <h5 align="center">
     
 <!-- PROJECT SHIELDS -->
-[![License](https://img.shields.io/badge/License-Apache%202.0-yellow)](https://github.com/VisionRush/DeepFakeDefenders/blob/main/LICENSE) 
+[![License](https://img.shields.io/badge/License-Apache%202.0-yellow)](https://github.com/VisionRush/DeepFakeDefenders/blob/main/LICENSE)
 ![GitHub contributors](https://img.shields.io/github/contributors/VisionRush/DeepFakeDefenders)
 [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FVisionRush%2FDeepFakeDefenders&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=Visitors&edge_flat=false)](https://hits.seeyoufarm.com)
 ![GitHub Repo stars](https://img.shields.io/github/stars/VisionRush/DeepFakeDefenders)
@@ -17,7 +17,7 @@
   <img src='./images/competition_title.png' width='850'/>
 </p>
 
-💡 We also provide [[中文文档 / CHINESE DOC](README_zh.md)]. We very welcome and appreciate your contributions to this project.
+💡 We also provide [[中文文档 / CHINESE DOC](README_zh.md)] and [[한국어 문서 / KOREAN DOC](README_kr.md)]. We very welcome and appreciate your contributions to this project.
 
 ## 📣 News
 
@@ -64,7 +64,7 @@ CUDA_VISIBLE_DEVICES=0 python main_train_single_gpu.py
 
 Replace the ConvNeXt trained model path and the RepLKNet trained model path in `merge.py`, and execute `python merge.py` to obtain the final inference test model.
 
-### 2.5 Inference
+#### 2.5 Inference
 
 The following example uses the **POST** request interface to request the image path as the request parameter, and the response output is the deepfake score predicted by the model.
 
