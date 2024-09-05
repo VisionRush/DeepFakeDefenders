@@ -21,6 +21,7 @@ ADD ./core /code/core
 ADD ./dataset /code/dataset
 ADD ./model /code/model
 ADD ./pre_model /code/pre_model
+ADD ./final_model_csv /code/final_model_csv
 ADD ./toolkit /code/toolkit
 ADD ./infer_api.py /code/infer_api.py
 ADD ./main_infer.py /code/main_infer.py
